@@ -1,0 +1,77 @@
+.row {
+	@apply flex;
+}
+
+.row-2 {
+	@apply flex gap-2;
+}
+
+.row-4 {
+	@apply flex gap-4;
+}
+
+.col {
+	@apply flex flex-col;
+}
+
+.col-2 {
+	@apply flex flex-col gap-2;
+}
+
+.col-4 {
+	@apply flex flex-col gap-4;
+}
+
+// row-col
+.row-sm-col-2 {
+	@apply flex gap-2 max-sm:flex-col;
+}
+
+.row-sm-col-4 {
+	@apply flex gap-4 max-sm:flex-col;
+}
+
+.col-sm-row-2 {
+	@apply flex gap-2 max-sm:flex-row flex-col;
+}
+
+.col-sm-row-4 {
+	@apply flex gap-4 max-sm:flex-row flex-col;
+}
+
+//
+.only-sm {
+	@apply sm:hidden;
+}
+
+.only-md {
+	@apply max-sm:hidden md:hidden;
+}
+
+.only-lg {
+	@apply max-md:hidden lg:hidden;
+}
+
+.only-xl {
+	@apply max-lg:hidden xl:hidden;
+}
+
+.scroll {
+	&::-webkit-scrollbar {
+		width: 7px;
+		height: 7px;
+		background-color: transparent;
+
+		&-track {
+			background-color: transparent;
+		}
+
+		&-thumb {
+			@apply bg-accent rounded-none;
+		}
+
+		&-corner {
+			@apply bg-accent;
+		}
+	}
+}

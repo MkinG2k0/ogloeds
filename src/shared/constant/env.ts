@@ -1,0 +1,8 @@
+import { getEnvVar } from 'shared/lib/env'
+
+export const API_URL = getEnvVar('VITE_PUBLIC_URL_ENDPOINT')
+
+export const NODE_ENV = getEnvVar('NODE_ENV')
+
+export const isDevEnv = NODE_ENV === 'development'
+export const isProdEnv = NODE_ENV === 'production'

@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--radius: 0.5rem;
+	}
+
+	.light {
+		--text: #424242;
+
+		--background: white;
+		--foreground: var(--text);
+
+		--muted: #e5e5e5;
+		--muted-foreground: var(--text);
+
+		--popover: var(--background);
+		--popover-foreground: var(--text);
+
+		--card: var(--background);
+		--card-foreground: var(--text);
+
+		--border: var(--text);
+		--input: var(--text);
+
+		--primary: #3a83e7;
+		--primary-foreground: var(--background);
+
+		--secondary: #baedeb;
+		--secondary-foreground: var(--text);
+
+		--accent: #1f477e;
+		--accent-foreground: var(--text);
+
+		--destructive: var(--background);
+		--destructive-foreground: var(--text);
+
+		--ring: var(--text);
+	}
+
+	.dark {
+		--text: #ffffff;
+
+		--background: black;
+		--foreground: var(--text);
+
+		--muted: #ccc;
+		--muted-foreground: #a7a7a7;
+
+		--popover: var(--background);
+		--popover-foreground: var(--text);
+
+		--card: var(--background);
+		--card-foreground: var(--text);
+
+		--border: var(--accent);
+		--input: var(--accent);
+
+		--primary: var(--text);
+		--primary-foreground: var(--background);
+
+		--secondary: var(--accent);
+		--secondary-foreground: var(--text);
+
+		--accent: #252527;
+		--accent-foreground: var(--text);
+
+		--destructive: var(--background);
+		--destructive-foreground: var(--text);
+
+		--ring: var(--accent);
+	}
+
+	.green {
+		--text: #ffffff;
+
+		--background: #0c1f22;
+		--foreground: var(--text);
+
+		--muted: var(--secondary);
+		--muted-foreground: #929292;
+
+		--popover: var(--background);
+		--popover-foreground: var(--text);
+
+		--card: var(--background);
+		--card-foreground: var(--text);
+
+		--border: var(--secondary);
+		--input: var(--secondary);
+
+		--primary: #db9e95;
+		--primary-foreground: var(--text);
+
+		--secondary: #143439;
+		--secondary-foreground: var(--text);
+
+		--accent: #c46354;
+		--accent-foreground: var(--text);
+
+		--destructive: var(--background);
+		--destructive-foreground: var(--text);
+
+		--ring: var(--text);
+	}
+
+
+
+
+
+}
+
+
+
+@layer base {
+	//* {
+	//	@apply border-border;
+	//}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
