@@ -16,12 +16,12 @@ const Settings = observer(() => {
 		navigate(NAV.root())
 	}
 
-	const onCheckedChange = (type: 'viewCalories' | 'viewCount' | 'viewPrice') => (value: boolean) => {
+	const onCheckedChange = (type: 'calcStats' | 'viewCalories' | 'viewCount' | 'viewPrice') => (value: boolean) => {
 		settings.set(type, value)
 	}
 
 	return (
-		<div className={'col-2 text-xl'}>
+		<div className={'col-4 text-xl'}>
 			<Button onClick={onBack}>Back</Button>
 			<h1>Settings</h1>
 			<div className={'flex items-center space-x-2'}>
@@ -53,6 +53,15 @@ const Settings = observer(() => {
 					htmlFor={'viewCalories'}
 				>
 					view calories
+				</label>
+			</div>
+			<div className={'flex items-center space-x-2'}>
+				<Checkbox checked={settings.calcStats} id={'calcStats'} onCheckedChange={onCheckedChange('calcStats')} />
+				<label
+					className={'font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'}
+					htmlFor={'calcStats'}
+				>
+					calc stats
 				</label>
 			</div>
 			<SelectTheme />

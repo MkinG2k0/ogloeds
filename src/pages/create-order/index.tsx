@@ -45,7 +45,7 @@ const CreateOrder = observer(() => {
 	}
 
 	return (
-		<div className={'col gap-4 h-full'}>
+		<div className={'col-2 h-full'}>
 			<div className={'row-2 w-full'}>
 				<Button className={'flex-auto'} onClick={onBack}>
 					Back
@@ -64,10 +64,10 @@ const CreateOrder = observer(() => {
 			</div>
 			<OrderList order={order} />
 			{!viewOnly && (
-				<Card className={'w-full h-fit p-2'}>
+				<div className={'w-full h-fit p-2 '}>
 					{settings.viewPrice ? (
 						<div className={'row-2 justify-between items-center'}>
-							<div className={'text-2xl'}>Total: {order.price}</div>
+							<div className={'text-2xl w-52'}>Total: {order.price}</div>
 							<Button className={`${settings.viewPrice ? 'w-full' : ''}`} onClick={onPreview}>
 								Preview
 							</Button>
@@ -77,7 +77,7 @@ const CreateOrder = observer(() => {
 							Preview
 						</Button>
 					)}
-				</Card>
+				</div>
 			)}
 		</div>
 	)
@@ -95,7 +95,6 @@ const OrderList = observer(({ order }: { order: Order }) => {
 
 const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 	const { price, name } = order
-	const anyView = settings.viewCount || settings.viewPrice || settings.viewCalories
 	const viewOnly = useViewOnly()
 
 	const onChangeName = (e) => {
@@ -125,7 +124,7 @@ const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 				<EatList eat={'Food'} order={order} type={'food'} />
 				<EatList eat={'Drink'} order={order} type={'drink'} />
 			</CardContent>
-			{anyView && (
+			{settings.calcStats && (
 				<CardFooter className={'flex justify-end'}>
 					<TotalList calories={order.calories} count={order.count} price={price} />
 				</CardFooter>
@@ -196,13 +195,14 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 
 const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | 'food' }> = observer(
 	({ eat, index, type, order }) => {
-		const { calories, name, price, count } = eat
+		const { name } = eat
 		const viewOnly = useViewOnly()
 
 		const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 			eat.setName(e.target.value)
 		}
-		const onChangeProperties = (type: 'calories' | 'price' | 'quantity') => {
+
+		const onChangeProperties = (type: 'calories' | 'count' | 'price') => {
 			return (e: React.ChangeEvent<HTMLInputElement>) => {
 				const value = Number(e.target.value)
 
@@ -212,8 +212,8 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 				if (type === 'price') {
 					eat.setPrice(value)
 				}
-				if (type === 'quantity') {
-					eat.setQuantity(value)
+				if (type === 'count') {
+					eat.setCount(value)
 				}
 			}
 		}
@@ -234,11 +234,12 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 					{settings.viewCount && (
 						<CardInput
 							className={'w-[100px] border-0 '}
+							defaultValue={1}
 							max={99_999}
-							onChange={onChangeProperties('quantity')}
-							placeholder={'quantity'}
+							min={0}
+							onChange={onChangeProperties('count')}
+							placeholder={'count'}
 							type={'number'}
-							value={count}
 						>
 							<TbAbacus className={'text-blue-500'} />
 						</CardInput>
@@ -247,11 +248,12 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 					{settings.viewPrice && (
 						<CardInput
 							className={'w-[100px] border-0'}
+							defaultValue={0}
 							max={99_999}
+							min={0}
 							onChange={onChangeProperties('price')}
 							placeholder={'price'}
 							type={'number'}
-							value={price}
 						>
 							<FaCoins className={'text-yellow-500'} />
 						</CardInput>
@@ -260,12 +262,12 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 					{settings.viewCalories && (
 						<CardInput
 							className={'w-[100px] border-0'}
+							defaultValue={0}
 							max={99_999}
 							min={0}
 							onChange={onChangeProperties('calories')}
 							placeholder={'calories'}
 							type={'number'}
-							value={calories}
 						>
 							<FaFire className={'text-red-500'} />
 						</CardInput>

@@ -4,6 +4,7 @@ class Setting {
 	viewCalories = true
 	viewPrice = true
 	viewCount = true
+	calcStats = true
 
 	constructor() {
 		makeAutoObservable(this)
@@ -27,7 +28,7 @@ class Setting {
 		localStorage.setItem('settings', settings)
 	}
 
-	set(type: 'viewCalories' | 'viewCount' | 'viewPrice', value: boolean) {
+	set(type: 'calcStats' | 'viewCalories' | 'viewCount' | 'viewPrice', value: boolean) {
 		this[type] = value
 		this.update()
 	}

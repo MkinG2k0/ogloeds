@@ -94,7 +94,7 @@ export class OrderItem {
 	id: string = uuid()
 	name = ''
 	price = 0
-	count = 1
+	count = 2
 	calories = 0
 	order: Order
 	eat: Eat[] = [new Eat(this, { type: 'food' }), new Eat(this, { type: 'drink' })]
@@ -130,7 +130,7 @@ export class OrderItem {
 	updateCalc() {
 		this.price = 0
 		this.calories = 0
-		this.count = 1
+		this.count = 0
 		this.eat.forEach((eat) => {
 			this.price += eat.count * eat.price
 			this.calories += eat.calories
@@ -179,7 +179,7 @@ export class Eat implements IEat {
 		this.order.updateCalc()
 	}
 
-	setQuantity(quantity: number) {
+	setCount(quantity: number) {
 		this.count = this.validateNumber(quantity)
 		this.order.updateCalc()
 	}
