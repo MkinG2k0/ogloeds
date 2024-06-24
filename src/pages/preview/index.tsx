@@ -4,19 +4,10 @@ import { useState } from 'react'
 
 import { appHistory } from 'pages/main/model'
 
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableFooter,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from 'shared/ui/table'
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'shared/ui/table'
 import { Card, CardHeader, CardTitle } from 'shared/ui/card'
 import { NAV } from 'shared/config/routing'
-import { Button, NavBtn } from 'shared'
+import { Button } from 'shared'
 
 import { observer } from 'mobx-react-lite'
 

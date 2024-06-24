@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { lazy } from 'react'
 
 import CreateOrder from 'pages/create-order'
+import Settings from 'pages/settings'
 import Preview from 'pages/preview'
 
 import { Layout } from 'entities/layout'
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
 			{
 				element: <Preview />,
 				path: NAV.previewNav(),
+			},
+			{
+				element: <Settings />,
+				path: NAV.settings(),
 			},
 		],
 	},

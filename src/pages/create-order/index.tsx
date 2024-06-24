@@ -3,6 +3,7 @@ import { useParams } from 'react-router'
 import { FC, useState } from 'react'
 
 import { Eat, Order, OrderItem, TEat } from 'pages/create-order/model'
+import { settings } from 'pages/settings/model'
 import { appHistory } from 'pages/main/model'
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'shared/ui/card'
@@ -40,7 +41,7 @@ const CreateOrder = observer(() => {
 		<div className={'col gap-4 h-full'}>
 			<Button onClick={onBack}>Back</Button>
 
-			<div className={'flex gap-2 justify-between '}>
+			<div className={'flex gap-2 justify-between flex-wrap '}>
 				<CardInput onChange={onChangeName} placeholder={'Name'}>
 					<FaClipboardList />
 				</CardInput>
@@ -48,10 +49,18 @@ const CreateOrder = observer(() => {
 			</div>
 			<OrderList order={order} />
 			<Card className={'w-full h-fit p-2'}>
-				<div className={'row-2 justify-between items-center'}>
-					<div className={'text-2xl'}>Total: {order.price}</div>
-					<Button onClick={onPreview}>Preview</Button>
-				</div>
+				{settings.viewPrice ? (
+					<div className={'row-2 justify-between items-center'}>
+						<div className={'text-2xl'}>Total: {order.price}</div>
+						<Button className={`${settings.viewPrice ? 'w-full' : ''}`} onClick={onPreview}>
+							Preview
+						</Button>
+					</div>
+				) : (
+					<Button className={'w-full'} onClick={onPreview}>
+						Preview
+					</Button>
+				)}
 			</Card>
 		</div>
 	)
@@ -69,7 +78,7 @@ const OrderList = observer(({ order }: { order: Order }) => {
 
 const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 	const { price, name } = order
-
+	const anyView = settings.viewCount || settings.viewPrice || settings.viewCalories
 	const onChangeName = (e) => {
 		order.setName(e.target.value)
 	}
@@ -95,9 +104,11 @@ const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 				<EatList eat={'Food'} order={order} type={'food'} />
 				<EatList eat={'Drink'} order={order} type={'drink'} />
 			</CardContent>
-			<CardFooter className={'flex justify-end'}>
-				<TotalList calories={order.calories} count={order.count} price={price} />
-			</CardFooter>
+			{anyView && (
+				<CardFooter className={'flex justify-end'}>
+					<TotalList calories={order.calories} count={order.count} price={price} />
+				</CardFooter>
+			)}
 		</Card>
 	)
 })
@@ -105,20 +116,27 @@ const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 const TotalList = ({ count, price, calories }: { calories: number; count: number; price: number }) => {
 	return (
 		<div className={'row-2 justify-end '}>
-			<div className={'row-2 items-center rounded-md border border-transparent px-3 w-[150px]'}>
-				<TbAbacus className={'text-blue-500'} />
-				<div className={'px-3 py-1'}>{count}</div>
-			</div>
-			<div className={'row-2 items-center rounded-md border border-transparent px-3 w-[150px]'}>
-				<FaCoins className={'text-yellow-500'} />
+			{settings.viewCount && (
+				<div className={'row-2 items-center rounded-md border border-transparent px-3 '}>
+					<TbAbacus className={'text-blue-500'} />
+					<div className={'px-3 py-1'}>{count}</div>
+				</div>
+			)}
 
-				<div className={'px-3 py-1'}>{price}</div>
-			</div>
-			<div className={'row-2 items-center rounded-md border border-transparent px-3 w-[150px]'}>
-				<FaFire className={'text-red-500'} />
-				<div className={'px-3 py-1'}>{calories}</div>
-			</div>
-			<div className={'w-[46px]'}></div>
+			{settings.viewPrice && (
+				<div className={'row-2 items-center rounded-md border border-transparent px-3 '}>
+					<FaCoins className={'text-yellow-500'} />
+					<div className={'px-3 py-1'}>{price}</div>
+				</div>
+			)}
+
+			{settings.viewCalories && (
+				<div className={'row-2 items-center rounded-md border border-transparent px-3 '}>
+					<FaFire className={'text-red-500'} />
+					<div className={'px-3 py-1'}>{calories}</div>
+				</div>
+			)}
+			{/*<div className={'w-[46px]'}></div>*/}
 		</div>
 	)
 }
@@ -135,7 +153,7 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 	}
 
 	return (
-		<div className={'col-2'}>
+		<div className={'col-2 '}>
 			<div className={'row-2 items-center '}>
 				{type === 'food' ? <FaBowlFood /> : <RiDrinksFill />}
 				{eat}:
@@ -162,9 +180,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 		const onChangeProperties = (type: 'calories' | 'price' | 'quantity') => {
 			return (e: React.ChangeEvent<HTMLInputElement>) => {
 				const value = Number(e.target.value)
-				if (!value) {
-					return
-				}
+
 				if (type === 'calories') {
 					eat.setCalories(value)
 				}
@@ -178,46 +194,55 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 		}
 
 		return (
-			<div className={'row-2 items-center'} key={index}>
-				<div className={'mr-2'}>{index + 1}</div>
-				<Input onChange={onChange} placeholder={`write ${type}`} value={name} />
-				<CardInput
-					className={'w-[100px] border-0'}
-					max={99_999}
-					min={0}
-					onChange={onChangeProperties('quantity')}
-					placeholder={'quantity'}
-					type={'number'}
-					value={count}
-				>
-					<TbAbacus className={'text-blue-500'} />
-				</CardInput>
+			<div className={'col-2 align-middle '} key={index}>
+				<div className={'row-2 items-center flex-auto flex-wrap'}>
+					<div className={'row-2 items-center flex-auto min-w-[200px]'}>
+						<div className={'mr-2'}>{index + 1}</div>
+						<Input className={'flex-auto '} onChange={onChange} placeholder={`write ${type}`} value={name} />
+					</div>
+					{settings.viewCount && (
+						<CardInput
+							className={'w-[100px] border-0 '}
+							max={99_999}
+							onChange={onChangeProperties('quantity')}
+							placeholder={'quantity'}
+							type={'number'}
+							value={count}
+						>
+							<TbAbacus className={'text-blue-500'} />
+						</CardInput>
+					)}
 
-				<CardInput
-					className={'w-[100px] border-0'}
-					max={99_999}
-					min={0}
-					onChange={onChangeProperties('price')}
-					placeholder={'price'}
-					type={'number'}
-					value={price}
-				>
-					<FaCoins className={'text-yellow-500'} />
-				</CardInput>
-				<CardInput
-					className={'w-[100px] border-0'}
-					max={99_999}
-					min={0}
-					onChange={onChangeProperties('calories')}
-					placeholder={'calories'}
-					type={'number'}
-					value={calories}
-				>
-					<FaFire className={'text-red-500'} />
-				</CardInput>
-				<Button color={'red'} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
-					<IoIosRemove />
-				</Button>
+					{settings.viewPrice && (
+						<CardInput
+							className={'w-[100px] border-0'}
+							max={99_999}
+							onChange={onChangeProperties('price')}
+							placeholder={'price'}
+							type={'number'}
+							value={price}
+						>
+							<FaCoins className={'text-yellow-500'} />
+						</CardInput>
+					)}
+
+					{settings.viewCalories && (
+						<CardInput
+							className={'w-[100px] border-0'}
+							max={99_999}
+							min={0}
+							onChange={onChangeProperties('calories')}
+							placeholder={'calories'}
+							type={'number'}
+							value={calories}
+						>
+							<FaFire className={'text-red-500'} />
+						</CardInput>
+					)}
+					<Button className={'max-w-[50px]'} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
+						<IoIosRemove />
+					</Button>
+				</div>
 			</div>
 		)
 	},
@@ -235,7 +260,7 @@ const SelectMembers = observer(({ order }: { order: Order }) => {
 
 	return (
 		<div className={'row-2 items-center'}>
-			<div className={'mr-2'}>Choose members</div>
+			{/*<div className={'mr-2'}>Choose members</div>*/}
 			<Button onClick={() => order.setMembers(members - 1)}>
 				<FaUserMinus />
 			</Button>

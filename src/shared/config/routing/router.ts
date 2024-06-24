@@ -1,4 +1,4 @@
-const paths = (...paths: string[]) => ''.concat(paths.join('/'))
+// const paths = (...paths: string[]) => ''.concat(paths.join('/'))
 
 export const NAV = {
 	all: () => '*',
@@ -8,4 +8,5 @@ export const NAV = {
 	previewId: (id: string) => `/preview/${id}`,
 	previewNav: () => '/preview/:id',
 	map: () => '/map',
+	settings: () => '/settings',
 }

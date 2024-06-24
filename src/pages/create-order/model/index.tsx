@@ -1,7 +1,9 @@
 import { uuid } from 'shared/lib/uuid'
 
 import { makeAutoObservable } from 'mobx'
+
 export type TEat = 'drink' | 'food'
+
 export interface IEat {
 	name: string
 	price: number
@@ -74,13 +76,13 @@ export class Order implements IOrder {
 	previewOrder() {
 		const allOrders: Record<string, { count: number }> = {}
 
-		this.orders.forEach(({ eat }) => {
-			eat.forEach(({ name, count }) => {
+		this.orders.forEach(({eat}) => {
+			eat.forEach(({name, count}) => {
 				const curr = allOrders[name]
 				if (curr) {
 					allOrders[name].count += count
 				} else {
-					allOrders[name] = { count }
+					allOrders[name] = {count}
 				}
 			})
 		})
@@ -143,9 +145,9 @@ export class OrderItem {
 }
 
 export class Eat implements IEat {
-	calories = 0
 	id: string = uuid()
 	name = ''
+	calories = 0
 	price = 0
 	count = 0
 	type: TEat = 'food'

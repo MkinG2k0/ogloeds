@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 export const HistoryOrder = observer(() => {
 	return (
-		<div className={'flex flex-auto flex-col gap-2 overflow-auto pr-2'}>
+		<div className={'flex flex-auto flex-col gap-2 pr-2'}>
 			{appHistory.orders.map((order) => (
 				<CardOrder key={order.id} order={order} />
 			))}
