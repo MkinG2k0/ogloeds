@@ -45,24 +45,27 @@ const CreateOrder = observer(() => {
 	}
 
 	return (
-		<div className={'col-2 h-full'}>
-			<div className={'row-2 w-full'}>
-				<Button className={'flex-auto'} onClick={onBack}>
-					Back
-				</Button>
-				{viewOnly && (
-					<NavBtn className={'text-md'} to={NAV.createOrder(order.id)} variant={'outline'}>
-						<FaEdit />
-					</NavBtn>
-				)}
+		<div className={'col h-full'}>
+			<div className={'col gap-4 h-full overflow-auto pr-4'}>
+				<div className={'row-2 w-full'}>
+					<Button className={'flex-auto'} onClick={onBack}>
+						Back
+					</Button>
+					{viewOnly && (
+						<NavBtn className={'text-md'} to={NAV.createOrder(order.id)} variant={'outline'}>
+							<FaEdit />
+						</NavBtn>
+					)}
+				</div>
+				<div className={'flex gap-2 justify-between flex-wrap '}>
+					<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Name'} value={order.name}>
+						<FaClipboardList />
+					</CardInput>
+					<SelectMembers order={order} />
+				</div>
+				<OrderList order={order} />
 			</div>
-			<div className={'flex gap-2 justify-between flex-wrap '}>
-				<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Name'} value={order.name}>
-					<FaClipboardList />
-				</CardInput>
-				<SelectMembers order={order} />
-			</div>
-			<OrderList order={order} />
+
 			{!viewOnly && (
 				<div className={'w-full h-fit p-2 '}>
 					{settings.viewPrice ? (
@@ -85,7 +88,7 @@ const CreateOrder = observer(() => {
 
 const OrderList = observer(({ order }: { order: Order }) => {
 	return (
-		<div className={'col-4 pr-2 overflow-auto'}>
+		<div className={'col-4 '}>
 			{order.orders.map((order) => (
 				<OrderCard key={order.id} order={order} />
 			))}
@@ -217,6 +220,8 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 				}
 			}
 		}
+
+		const onChangeMock = () => {}
 
 		return (
 			<div className={'col-2 align-middle '} key={index}>
