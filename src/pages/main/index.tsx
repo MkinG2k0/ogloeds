@@ -16,7 +16,7 @@ const Main = () => {
 				</div>
 				<HistoryOrder />
 			</div>
-			<NavBtn className={'w-full'} to={NAV.createOrder()}>
+			<NavBtn className={'w-full'} to={NAV.createOrder('new')}>
 				Add new order
 			</NavBtn>
 		</div>

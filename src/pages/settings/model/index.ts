@@ -27,21 +27,6 @@ class Setting {
 		localStorage.setItem('settings', settings)
 	}
 
-	setViewCalories(viewCalories: boolean) {
-		this.viewCalories = viewCalories
-		this.update()
-	}
-
-	setViewPrice(viewPrice: boolean) {
-		this.viewPrice = viewPrice
-		this.update()
-	}
-
-	setViewCount(viewCount: boolean) {
-		this.viewCount = viewCount
-		this.update()
-	}
-
 	set(type: 'viewCalories' | 'viewCount' | 'viewPrice', value: boolean) {
 		this[type] = value
 		this.update()

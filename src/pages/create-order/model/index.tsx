@@ -1,3 +1,4 @@
+import { replaceFields } from 'shared/lib/merge'
 import { uuid } from 'shared/lib/uuid'
 
 import { makeAutoObservable } from 'mobx'
@@ -12,13 +13,6 @@ export interface IEat {
 	type: TEat
 }
 
-export interface IOrderItem {
-	name: string
-	foods: Eat[]
-	drinks: Eat[]
-	price: number
-}
-
 export interface IOrder {
 	members: number
 	orders: OrderItem[]
@@ -27,16 +21,21 @@ export interface IOrder {
 export class Order implements IOrder {
 	id: string = uuid()
 	members = 2
-	orders = [new OrderItem(this, 'Name1'), new OrderItem(this, 'Name2')]
 	price = 0
 	name = ''
+	orders = [new OrderItem(this, { name: 'Name1' }), new OrderItem(this, { name: 'Name2' })]
 
-	constructor(id?: string) {
+	constructor(data?: Partial<Order>) {
 		makeAutoObservable(this)
 
-		if (id) {
-			this.id = id
+		replaceFields(this, data)
+		if (data) {
+			this.init()
 		}
+	}
+
+	init() {
+		this.orders = this.orders.map((order) => new OrderItem(this, order))
 	}
 
 	setMembers(members: number) {
@@ -44,14 +43,14 @@ export class Order implements IOrder {
 			return
 		}
 		if (this.members + 1 === members) {
-			this.orders.push(new OrderItem(this, `Name${members}`))
+			this.orders.push(new OrderItem(this, { name: `Name${members}` }))
 		} else if (this.members + 1 < members) {
 			const dif = members - this.members
 			const arr = new Array(dif)
 				.fill('')
 				.map((_, i) => members - i)
 				.reverse()
-			arr.forEach((elem) => this.orders.push(new OrderItem(this, `Name${elem}`)))
+			arr.forEach(() => this.orders.push(new OrderItem(this, { name: `Name${members}` })))
 		} else {
 			this.orders = this.orders.slice(0, members)
 		}
@@ -76,13 +75,13 @@ export class Order implements IOrder {
 	previewOrder() {
 		const allOrders: Record<string, { count: number }> = {}
 
-		this.orders.forEach(({eat}) => {
-			eat.forEach(({name, count}) => {
+		this.orders.forEach(({ eat }) => {
+			eat.forEach(({ name, count }) => {
 				const curr = allOrders[name]
 				if (curr) {
 					allOrders[name].count += count
 				} else {
-					allOrders[name] = {count}
+					allOrders[name] = { count }
 				}
 			})
 		})
@@ -92,24 +91,30 @@ export class Order implements IOrder {
 }
 
 export class OrderItem {
-	eat: Eat[] = []
 	id: string = uuid()
 	name = ''
 	price = 0
 	count = 1
 	calories = 0
 	order: Order
+	eat: Eat[] = [new Eat(this, { type: 'food' }), new Eat(this, { type: 'drink' })]
 
-	constructor(order: Order, name: string) {
+	constructor(order: Order, data?: Partial<OrderItem>) {
 		makeAutoObservable(this)
 
-		this.name = name
+		replaceFields(this, data)
+
+		this.init()
+
 		this.order = order
-		this.eat = [new Eat(this, 'food'), new Eat(this, 'drink')]
+	}
+
+	init() {
+		this.eat = this.eat.map((eat) => new Eat(this, eat))
 	}
 
 	addEat(type: TEat = 'food') {
-		this.eat.push(new Eat(this, type))
+		this.eat.push(new Eat(this, { type }))
 		this.updateCalc()
 	}
 
@@ -125,7 +130,7 @@ export class OrderItem {
 	updateCalc() {
 		this.price = 0
 		this.calories = 0
-		this.count = 0
+		this.count = 1
 		this.eat.forEach((eat) => {
 			this.price += eat.count * eat.price
 			this.calories += eat.calories
@@ -149,19 +154,15 @@ export class Eat implements IEat {
 	name = ''
 	calories = 0
 	price = 0
-	count = 0
+	count = 1
 	type: TEat = 'food'
 	order: OrderItem
 
-	constructor(order: OrderItem, type: TEat = 'food', name = '', price = 0, count = 1, calories = 0) {
+	constructor(order: OrderItem, data?: Partial<Eat>) {
 		makeAutoObservable(this)
 
-		this.name = name
-		this.type = type
-		this.price = price
-		this.count = count
-		this.calories = calories
 		this.order = order
+		replaceFields(this, data)
 	}
 
 	setName(name: string) {

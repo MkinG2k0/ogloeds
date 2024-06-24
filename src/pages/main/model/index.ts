@@ -11,8 +11,8 @@ export class History {
 		const orders = localStorage.getItem('history')
 		if (orders) {
 			const parse = JSON.parse(orders) as Order[]
-			// this.orders = parse.map((data) => new Order(data))
-			this.orders = parse
+			this.orders = parse.map((data) => new Order(data))
+			// this.orders = parse
 		}
 	}
 

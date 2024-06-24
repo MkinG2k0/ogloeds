@@ -1,5 +1,5 @@
+import { useLocation, useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
-import { useParams } from 'react-router'
 import { FC, useState } from 'react'
 
 import { Eat, Order, OrderItem, TEat } from 'pages/create-order/model'
@@ -19,9 +19,16 @@ import { FaBowlFood } from 'react-icons/fa6'
 import { observer } from 'mobx-react-lite'
 import { TbAbacus } from 'react-icons/tb'
 
+const useViewOnly = () => {
+	const { state } = useLocation()
+	return Boolean(state?.viewOnly)
+}
+
 const CreateOrder = observer(() => {
-	const { id } = useParams()
-	const [order] = useState(new Order(id))
+	const { id = 'new' } = useParams()
+	const viewOnly = useViewOnly()
+
+	const [order] = useState(id === 'new' ? new Order() : appHistory.find(id)!)
 	const navigate = useNavigate()
 
 	const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,26 +49,28 @@ const CreateOrder = observer(() => {
 			<Button onClick={onBack}>Back</Button>
 
 			<div className={'flex gap-2 justify-between flex-wrap '}>
-				<CardInput onChange={onChangeName} placeholder={'Name'}>
+				<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Name'} value={order.name}>
 					<FaClipboardList />
 				</CardInput>
 				<SelectMembers order={order} />
 			</div>
 			<OrderList order={order} />
-			<Card className={'w-full h-fit p-2'}>
-				{settings.viewPrice ? (
-					<div className={'row-2 justify-between items-center'}>
-						<div className={'text-2xl'}>Total: {order.price}</div>
-						<Button className={`${settings.viewPrice ? 'w-full' : ''}`} onClick={onPreview}>
+			{!viewOnly && (
+				<Card className={'w-full h-fit p-2'}>
+					{settings.viewPrice ? (
+						<div className={'row-2 justify-between items-center'}>
+							<div className={'text-2xl'}>Total: {order.price}</div>
+							<Button className={`${settings.viewPrice ? 'w-full' : ''}`} onClick={onPreview}>
+								Preview
+							</Button>
+						</div>
+					) : (
+						<Button className={'w-full'} onClick={onPreview}>
 							Preview
 						</Button>
-					</div>
-				) : (
-					<Button className={'w-full'} onClick={onPreview}>
-						Preview
-					</Button>
-				)}
-			</Card>
+					)}
+				</Card>
+			)}
 		</div>
 	)
 })
@@ -79,6 +88,8 @@ const OrderList = observer(({ order }: { order: Order }) => {
 const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 	const { price, name } = order
 	const anyView = settings.viewCount || settings.viewPrice || settings.viewCalories
+	const viewOnly = useViewOnly()
+
 	const onChangeName = (e) => {
 		order.setName(e.target.value)
 	}
@@ -87,17 +98,19 @@ const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 		<Card className={'w-full h-fit'}>
 			<CardHeader>
 				<CardTitle className={'row-2 justify-between'}>
-					<CardInput onChange={onChangeName} value={name}>
+					<CardInput disabled={viewOnly} onChange={onChangeName} value={name}>
 						<FaUser />
 					</CardInput>
-					<Button
-						onClick={() => {
-							order.remove()
-						}}
-						variant={'danger'}
-					>
-						<FaTrash />
-					</Button>
+					{!viewOnly && (
+						<Button
+							onClick={() => {
+								order.remove()
+							}}
+							variant={'danger'}
+						>
+							<FaTrash />
+						</Button>
+					)}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className={'col-2 '}>
@@ -148,6 +161,8 @@ interface EatListProps {
 }
 
 const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
+	const viewOnly = useViewOnly()
+
 	const onAddEat = () => {
 		order.addEat(type)
 	}
@@ -162,10 +177,11 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 			{order.getEatByType(type).map((eat, index) => (
 				<EatItem eat={eat} index={index} key={eat.id} order={order} type={'food'} />
 			))}
-
-			<Button onClick={onAddEat} variant={'outline'}>
-				{`Add ${eat}`}
-			</Button>
+			{!viewOnly && (
+				<Button onClick={onAddEat} variant={'outline'}>
+					{`Add ${eat}`}
+				</Button>
+			)}
 		</div>
 	)
 })
@@ -173,6 +189,7 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | 'food' }> = observer(
 	({ eat, index, type, order }) => {
 		const { calories, name, price, count } = eat
+		const viewOnly = useViewOnly()
 
 		const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 			eat.setName(e.target.value)
@@ -198,7 +215,13 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 				<div className={'row-2 items-center flex-auto flex-wrap'}>
 					<div className={'row-2 items-center flex-auto min-w-[200px]'}>
 						<div className={'mr-2'}>{index + 1}</div>
-						<Input className={'flex-auto '} onChange={onChange} placeholder={`write ${type}`} value={name} />
+						<Input
+							className={'flex-auto '}
+							disabled={viewOnly}
+							onChange={onChange}
+							placeholder={`write ${type}`}
+							value={name}
+						/>
 					</div>
 					{settings.viewCount && (
 						<CardInput
@@ -239,9 +262,11 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 							<FaFire className={'text-red-500'} />
 						</CardInput>
 					)}
-					<Button className={'max-w-[50px]'} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
-						<IoIosRemove />
-					</Button>
+					{!viewOnly && (
+						<Button className={'max-w-[50px]'} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
+							<IoIosRemove />
+						</Button>
+					)}
 				</div>
 			</div>
 		)
@@ -250,6 +275,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 
 const SelectMembers = observer(({ order }: { order: Order }) => {
 	const { members } = order
+	const viewOnly = useViewOnly()
 
 	const onChangeMembers = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const number = Number(e.target.value)
@@ -258,9 +284,18 @@ const SelectMembers = observer(({ order }: { order: Order }) => {
 		}
 	}
 
+	if (viewOnly) {
+		return (
+			<div className={'row-2 items-center'}>
+				<CardInput disabled value={members}>
+					<FaUser />
+				</CardInput>
+			</div>
+		)
+	}
+
 	return (
 		<div className={'row-2 items-center'}>
-			{/*<div className={'mr-2'}>Choose members</div>*/}
 			<Button onClick={() => order.setMembers(members - 1)}>
 				<FaUserMinus />
 			</Button>

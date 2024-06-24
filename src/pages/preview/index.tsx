@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router'
 import { useState } from 'react'
 
+import { settings } from 'pages/settings/model'
 import { appHistory } from 'pages/main/model'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from 'shared/ui/table'
@@ -50,12 +51,14 @@ const Preview = observer(() => {
 								</TableRow>
 							))}
 						</TableBody>
-						<TableFooter>
-							<TableRow>
-								<TableCell colSpan={3}>Total price</TableCell>
-								<TableCell className={'text-right'}>{order.price}</TableCell>
-							</TableRow>
-						</TableFooter>
+						{settings.viewPrice && (
+							<TableFooter>
+								<TableRow>
+									<TableCell colSpan={3}>Total price</TableCell>
+									<TableCell className={'text-right'}>{order.price}</TableCell>
+								</TableRow>
+							</TableFooter>
+						)}
 					</Table>
 				</Card>
 				<Button onClick={onSave}>Save</Button>
