@@ -31,7 +31,7 @@
 		--secondary: #baedeb;
 		--secondary-foreground: var(--text);
 
-		--accent: #1f477e;
+		--accent: #aacbfc;
 		--accent-foreground: var(--text);
 
 		--destructive: var(--background);
@@ -106,12 +106,41 @@
 		--ring: var(--text);
 	}
 
+	.red {
+		--text: #ffffff;
 
+		--background: #450000;
+		--foreground: var(--text);
 
+		--muted: var(--secondary);
+		--muted-foreground: #929292;
+
+		--popover: var(--background);
+		--popover-foreground: var(--text);
+
+		--card: var(--background);
+		--card-foreground: var(--text);
+
+		--border: var(--secondary);
+		--input: var(--secondary);
+
+		--primary: #e54c4c;
+		--primary-foreground: var(--text);
+
+		--secondary: #252527;
+		--secondary-foreground: var(--text);
+
+		--accent: #e54c4c;
+		--accent-foreground: var(--text);
+
+		--destructive: var(--background);
+		--destructive-foreground: var(--text);
+
+		--ring: var(--text);
+	}
 
 
 }
-
 
 
 @layer base {

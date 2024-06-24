@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
+import { SelectTheme } from 'pages/settings/ui/toggle-theme'
 import { settings } from 'pages/settings/model'
 
 import { Checkbox } from 'shared/ui/checkbox'
@@ -54,6 +55,7 @@ const Settings = observer(() => {
 					view calories
 				</label>
 			</div>
+			<SelectTheme />
 		</div>
 	)
 })

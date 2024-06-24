@@ -5,11 +5,12 @@ import { Button, ButtonProps } from 'shared/ui/button'
 
 export interface NavBtnProps extends ButtonProps {
 	to: string
+	classNameLink?: string
 }
 
-export const NavBtn: FC<NavBtnProps> = ({ children, to, ...props }) => {
+export const NavBtn: FC<NavBtnProps> = ({ children, to, classNameLink, ...props }) => {
 	return (
-		<Link to={to}>
+		<Link className={classNameLink} to={to}>
 			<Button {...props}>{children}</Button>
 		</Link>
 	)

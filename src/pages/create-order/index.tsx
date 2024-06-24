@@ -10,9 +10,9 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'shared/ui/
 import { CardInput } from 'shared/ui/card-input'
 import { NAV } from 'shared/config/routing'
 import { Input } from 'shared/ui/input'
-import { Button } from 'shared'
+import { Button, NavBtn } from 'shared'
 
-import { FaClipboardList, FaCoins, FaFire, FaTrash, FaUser, FaUserMinus, FaUserPlus } from 'react-icons/fa'
+import { FaClipboardList, FaCoins, FaEdit, FaFire, FaTrash, FaUser, FaUserMinus, FaUserPlus } from 'react-icons/fa'
 import { RiDrinksFill } from 'react-icons/ri'
 import { IoIosRemove } from 'react-icons/io'
 import { FaBowlFood } from 'react-icons/fa6'
@@ -41,13 +41,21 @@ const CreateOrder = observer(() => {
 	}
 
 	const onBack = () => {
-		navigate(NAV.root())
+		navigate(-1)
 	}
 
 	return (
 		<div className={'col gap-4 h-full'}>
-			<Button onClick={onBack}>Back</Button>
-
+			<div className={'row-2 w-full'}>
+				<Button className={'flex-auto'} onClick={onBack}>
+					Back
+				</Button>
+				{viewOnly && (
+					<NavBtn className={'text-md'} to={NAV.createOrder(order.id)} variant={'outline'}>
+						<FaEdit />
+					</NavBtn>
+				)}
+			</div>
 			<div className={'flex gap-2 justify-between flex-wrap '}>
 				<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Name'} value={order.name}>
 					<FaClipboardList />

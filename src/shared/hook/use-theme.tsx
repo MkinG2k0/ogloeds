@@ -1,11 +1,16 @@
-import { createContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 export const themeContext = createContext({
+	themes: ['light', 'dark', 'system'],
 	setTheme: (prev: string) => {},
 	theme: 'dark',
 })
 
 const isDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches
+
+export const useTheme = () => {
+	return useContext(themeContext)
+}
 
 export const ThemeContext = ({ children }) => {
 	const defaultTheme = useRef<string>(localStorage.getItem('theme') || (isDark() ? 'dark' : 'light'))
@@ -44,5 +49,9 @@ export const ThemeContext = ({ children }) => {
 		setTheme(value)
 	}
 
-	return <themeContext.Provider value={{ setTheme: _setTheme, theme }}>{children}</themeContext.Provider>
+	return (
+		<themeContext.Provider value={{ setTheme: _setTheme, theme, themes: ['light', 'dark', 'green', 'red', 'system'] }}>
+			{children}
+		</themeContext.Provider>
+	)
 }
