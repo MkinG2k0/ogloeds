@@ -32,6 +32,8 @@ export class History {
 				return item
 			})
 		}
+
+		this.save()
 	}
 
 	save() {

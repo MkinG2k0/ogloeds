@@ -34,7 +34,7 @@ const Preview = observer(() => {
 			<div className={'col gap-2 justify-between h-full'}>
 				<Card>
 					<CardHeader>
-						<CardTitle className={'row-2 justify-between'}>{order.name}</CardTitle>
+						<CardTitle className={'row-2 justify-between'}>{order.name || 'Cafe name'}</CardTitle>
 					</CardHeader>
 					<Table>
 						<TableHeader>

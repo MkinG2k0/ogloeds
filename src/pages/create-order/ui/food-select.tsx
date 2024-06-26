@@ -28,7 +28,7 @@ interface FoodSelectProps extends InputProps {
 	onChangeFood?: (value: string) => void
 }
 
-export const FoodSelect: FC<FoodSelectProps> = (props) => {
+export const FoodSelect: FC<FoodSelectProps> = ({ onChangeFood, ...props }) => {
 	const [value, setValue] = useState(String(props.value || ''))
 	const [isOpen, setIsOpen] = useState(false)
 	const [filterFoods, setFilterFoods] = useState<Food[]>([])
@@ -58,7 +58,7 @@ export const FoodSelect: FC<FoodSelectProps> = (props) => {
 
 		setFilterFoods(filterFoods)
 
-		props.onChangeFood?.(value)
+		onChangeFood?.(value)
 	}, [value])
 
 	return (
