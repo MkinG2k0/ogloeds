@@ -29,7 +29,7 @@ interface FoodSelectProps extends InputProps {
 }
 
 export const FoodSelect: FC<FoodSelectProps> = (props) => {
-	const [value, setValue] = useState('')
+	const [value, setValue] = useState(String(props.value || ''))
 	const [isOpen, setIsOpen] = useState(false)
 	const [filterFoods, setFilterFoods] = useState<Food[]>([])
 

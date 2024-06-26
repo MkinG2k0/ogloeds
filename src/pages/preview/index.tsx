@@ -44,12 +44,15 @@ const Preview = observer(() => {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{order.previewOrder().map(([name, { count }]) => (
-								<TableRow key={name}>
-									<TableCell className={'font-medium'}>{name}</TableCell>
-									<TableCell>{count}</TableCell>
-								</TableRow>
-							))}
+							{order
+								.previewOrder()
+								.filter(([value]) => value)
+								.map(([name, { count }]) => (
+									<TableRow key={name}>
+										<TableCell className={'font-medium'}>{name}</TableCell>
+										<TableCell>{count}</TableCell>
+									</TableRow>
+								))}
 						</TableBody>
 						{settings.viewPrice && (
 							<TableFooter>

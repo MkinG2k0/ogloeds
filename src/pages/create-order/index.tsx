@@ -215,6 +215,7 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 
 const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: TEat }> = observer(
 	({ eat, index, type, order }) => {
+		const { name } = eat
 		const viewOnly = useViewOnly()
 
 		const onChangeFood = (value: string) => {
@@ -254,6 +255,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: TEat }> = o
 							onChangeFood={onChangeFood}
 							onKeyDown={onKeyDown}
 							placeholder={`write ${type}`}
+							value={name}
 						/>
 						{/*<Input*/}
 						{/*	*/}
