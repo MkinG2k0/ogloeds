@@ -42,11 +42,7 @@ const CreateOrder = observer(() => {
 	}
 
 	const onBack = () => {
-		if (id === 'new') {
-			navigate(NAV.root())
-		} else {
-			navigate(-1)
-		}
+		navigate(NAV.root())
 	}
 
 	return (
