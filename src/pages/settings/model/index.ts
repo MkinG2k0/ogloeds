@@ -1,10 +1,26 @@
+import { replaceFields } from 'shared/lib/merge'
+
 import { makeAutoObservable } from 'mobx'
 
-class Setting {
+export const settingsProp = {
+	calcStats: 'calcStats',
+	splitFood: 'splitFood',
+	viewCalories: 'viewCalories',
+	viewCount: 'viewCount',
+	viewPrice: 'viewPrice',
+} as const
+
+export type SettingType = typeof settingsProp
+export type SettingTypeKey = keyof SettingType
+
+export const listSettings = Object.entries(settingsProp).map(([key]) => key) as SettingTypeKey[]
+
+class Setting implements Record<SettingTypeKey, boolean> {
 	viewCalories = true
 	viewPrice = true
 	viewCount = true
 	calcStats = true
+	splitFood = true
 
 	constructor() {
 		makeAutoObservable(this)
@@ -13,22 +29,16 @@ class Setting {
 
 		if (settings) {
 			const parse = JSON.parse(settings) as Setting
-			this.viewCalories = parse.viewCalories
-			this.viewPrice = parse.viewPrice
-			this.viewCount = parse.viewCount
+			replaceFields(this, parse)
 		}
 	}
 
 	update() {
-		const settings = JSON.stringify({
-			viewCalories: this.viewCalories,
-			viewPrice: this.viewPrice,
-			viewCount: this.viewCount,
-		})
+		const settings = JSON.stringify(this)
 		localStorage.setItem('settings', settings)
 	}
 
-	set(type: 'calcStats' | 'viewCalories' | 'viewCount' | 'viewPrice', value: boolean) {
+	set(type: SettingTypeKey, value: boolean) {
 		this[type] = value
 		this.update()
 	}

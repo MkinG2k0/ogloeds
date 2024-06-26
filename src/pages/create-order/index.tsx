@@ -99,6 +99,7 @@ const OrderList = observer(({ order }: { order: Order }) => {
 const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 	const { price, name } = order
 	const viewOnly = useViewOnly()
+	const anyValue = settings.calcStats && (settings.viewCount || settings.viewPrice || settings.viewCalories)
 
 	const onChangeName = (e) => {
 		order.setName(e.target.value)
@@ -124,10 +125,16 @@ const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 				</CardTitle>
 			</CardHeader>
 			<CardContent className={'col-2 '}>
-				<EatList eat={'Food'} order={order} type={'food'} />
-				<EatList eat={'Drink'} order={order} type={'drink'} />
+				{settings.splitFood ? (
+					<>
+						<EatList eat={'Food'} order={order} type={'food'} />
+						<EatList eat={'Drink'} order={order} type={'drink'} />
+					</>
+				) : (
+					<EatList eat={'Food'} order={order} type={'any'} />
+				)}
 			</CardContent>
-			{settings.calcStats && (
+			{anyValue && (
 				<CardFooter className={'flex justify-end'}>
 					<TotalList calories={order.calories} count={order.count} price={price} />
 				</CardFooter>
@@ -170,6 +177,12 @@ interface EatListProps {
 	type: TEat
 }
 
+const foodIcon = {
+	any: null,
+	food: <FaBowlFood />,
+	drink: <RiDrinksFill />,
+}
+
 const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 	const viewOnly = useViewOnly()
 
@@ -179,10 +192,12 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 
 	return (
 		<div className={'col-2 '}>
-			<div className={'row-2 items-center '}>
-				{type === 'food' ? <FaBowlFood /> : <RiDrinksFill />}
-				{eat}:
-			</div>
+			{type !== 'any' && (
+				<div className={'row-2 items-center '}>
+					{foodIcon[type]}
+					{eat}:
+				</div>
+			)}
 
 			{order.getEatByType(type).map((eat, index) => (
 				<EatItem eat={eat} index={index} key={eat.id} order={order} type={'food'} />
@@ -221,8 +236,6 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 			}
 		}
 
-		const onChangeMock = () => {}
-
 		return (
 			<div className={'col-2 align-middle '} key={index}>
 				<div className={'row-2 items-center flex-auto flex-wrap'}>
@@ -238,7 +251,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 					</div>
 					{settings.viewCount && (
 						<CardInput
-							className={'w-[100px] border-0 '}
+							className={'flex-auto border-0 '}
 							defaultValue={1}
 							max={99_999}
 							min={0}
@@ -252,7 +265,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 
 					{settings.viewPrice && (
 						<CardInput
-							className={'w-[100px] border-0'}
+							className={'flex-auto border-0'}
 							defaultValue={0}
 							max={99_999}
 							min={0}
@@ -266,7 +279,7 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 
 					{settings.viewCalories && (
 						<CardInput
-							className={'w-[100px] border-0'}
+							className={'flex-auto border-0'}
 							defaultValue={0}
 							max={99_999}
 							min={0}

@@ -3,7 +3,7 @@ import { uuid } from 'shared/lib/uuid'
 
 import { makeAutoObservable } from 'mobx'
 
-export type TEat = 'drink' | 'food'
+export type TEat = 'any' | 'drink' | 'food'
 
 export interface IEat {
 	name: string
