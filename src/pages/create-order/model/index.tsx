@@ -97,7 +97,7 @@ export class OrderItem {
 	count = 2
 	calories = 0
 	order: Order
-	eat: Eat[] = [new Eat(this, { type: 'food' }), new Eat(this, { type: 'drink' })]
+	eat: Eat[] = [new Eat(this, { type: 'food' }), new Eat(this, { type: 'drink' }), new Eat(this, { type: 'any' })]
 
 	constructor(order: Order, data?: Partial<OrderItem>) {
 		makeAutoObservable(this)

@@ -25,7 +25,7 @@ const Preview = observer(() => {
 	}
 
 	const onBack = () => {
-		navigate(-1)
+		navigate(NAV.createOrder(id))
 	}
 
 	return (

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FC, useState } from 'react'
 
 import { Eat, Order, OrderItem, TEat } from 'pages/create-order/model'
+import { FoodSelect } from 'pages/create-order/ui/food-select'
 import { settings } from 'pages/settings/model'
 import { appHistory } from 'pages/main/model'
 
@@ -57,7 +58,7 @@ const CreateOrder = observer(() => {
 						</NavBtn>
 					)}
 				</div>
-				<div className={'flex gap-2 justify-between flex-wrap '}>
+				<div className={'flex gap-2 justify-between'}>
 					<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Name'} value={order.name}>
 						<FaClipboardList />
 					</CardInput>
@@ -185,6 +186,7 @@ const foodIcon = {
 
 const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 	const viewOnly = useViewOnly()
+	const addBtnView = !viewOnly && !settings.hideAddFoodBtn
 
 	const onAddEat = () => {
 		order.addEat(type)
@@ -202,7 +204,7 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 			{order.getEatByType(type).map((eat, index) => (
 				<EatItem eat={eat} index={index} key={eat.id} order={order} type={'food'} />
 			))}
-			{!viewOnly && (
+			{addBtnView && (
 				<Button onClick={onAddEat} variant={'outline'}>
 					{`Add ${eat}`}
 				</Button>
@@ -211,13 +213,12 @@ const EatList: FC<EatListProps> = observer(({ order, eat, type }) => {
 	)
 })
 
-const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | 'food' }> = observer(
+const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: TEat }> = observer(
 	({ eat, index, type, order }) => {
-		const { name } = eat
 		const viewOnly = useViewOnly()
 
-		const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-			eat.setName(e.target.value)
+		const onChangeFood = (value: string) => {
+			eat.setName(value)
 		}
 
 		const onChangeProperties = (type: 'calories' | 'count' | 'price') => {
@@ -236,24 +237,32 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 			}
 		}
 
+		const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+			if (e.key === 'Enter' && settings.hideAddFoodBtn) {
+				order.addEat(type)
+			}
+		}
+
 		return (
 			<div className={'col-2 align-middle '} key={index}>
 				<div className={'row-2 items-center flex-auto flex-wrap'}>
 					<div className={'row-2 items-center flex-auto min-w-[200px]'}>
 						<div className={'mr-2'}>{index + 1}</div>
-						<Input
+						<FoodSelect
 							className={'flex-auto '}
 							disabled={viewOnly}
-							onChange={onChange}
+							onChangeFood={onChangeFood}
+							onKeyDown={onKeyDown}
 							placeholder={`write ${type}`}
-							value={name}
 						/>
+						{/*<Input*/}
+						{/*	*/}
+						{/*/>*/}
 					</div>
 					{settings.viewCount && (
 						<CardInput
-							className={'flex-auto border-0 '}
 							defaultValue={1}
-							max={99_999}
+							max={999}
 							min={0}
 							onChange={onChangeProperties('count')}
 							placeholder={'count'}
@@ -265,7 +274,6 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 
 					{settings.viewPrice && (
 						<CardInput
-							className={'flex-auto border-0'}
 							defaultValue={0}
 							max={99_999}
 							min={0}
@@ -279,7 +287,6 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: 'drink' | '
 
 					{settings.viewCalories && (
 						<CardInput
-							className={'flex-auto border-0'}
 							defaultValue={0}
 							max={99_999}
 							min={0}

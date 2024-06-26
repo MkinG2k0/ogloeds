@@ -5,6 +5,8 @@ import { SelectTheme } from 'pages/settings/ui/toggle-theme'
 
 import { Checkbox } from 'shared/ui/checkbox'
 import { NAV } from 'shared/config/routing'
+import { Switch } from 'shared/ui/switch'
+import { Label } from 'shared/ui/label'
 import { Button } from 'shared'
 
 import { observer } from 'mobx-react-lite'
@@ -15,6 +17,7 @@ const settingsMapText: Record<SettingTypeKey, string> = {
 	viewPrice: 'View Price',
 	splitFood: 'Split Food',
 	calcStats: 'Calc Stats',
+	hideAddFoodBtn: 'Hide Add Food Btn (Press Enter for add food)',
 }
 
 const Settings = observer(() => {
@@ -34,13 +37,8 @@ const Settings = observer(() => {
 			<h1>Settings</h1>
 			{listSettings.map((setting) => (
 				<div className={'flex items-center space-x-2'} key={setting}>
-					<Checkbox checked={settings[setting]} id={setting} onCheckedChange={onCheckedChange(setting)} />
-					<label
-						className={'font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'}
-						htmlFor={setting}
-					>
-						{settingsMapText[setting]}
-					</label>
+					<Switch checked={settings[setting]} id={setting} onCheckedChange={onCheckedChange(setting)} />
+					<Label htmlFor={setting}>{settingsMapText[setting]}</Label>
 				</div>
 			))}
 			<SelectTheme />
