@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { SettingTypeKey, listSettings, settings } from 'pages/settings/model'
 import { SelectTheme } from 'pages/settings/ui/toggle-theme'
 
-import { Checkbox } from 'shared/ui/checkbox'
 import { NAV } from 'shared/config/routing'
 import { Switch } from 'shared/ui/switch'
 import { Label } from 'shared/ui/label'
@@ -18,6 +17,7 @@ const settingsMapText: Record<SettingTypeKey, string> = {
 	splitFood: 'Split Food',
 	calcStats: 'Calc Stats',
 	hideAddFoodBtn: 'Hide Add Food Btn (Press Enter for add food)',
+	carouselChoose: 'carousel choose',
 }
 
 const Settings = observer(() => {

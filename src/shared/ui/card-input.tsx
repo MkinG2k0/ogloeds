@@ -6,13 +6,16 @@ import { cn } from 'shared/lib'
 
 interface ICardInput extends InputProps {
 	children?: ReactNode
+	classNameWrap?: string
 }
 
-export const CardInput = React.forwardRef<HTMLInputElement, ICardInput>(({ children, ...props }, ref) => {
-	return (
-		<div className={'row-2 items-center rounded-md border border-input px-3 flex-auto'}>
-			{children}
-			<Input className={cn(props.className, 'flex-auto border-0')} {...props} ref={ref} />
-		</div>
-	)
-})
+export const CardInput = React.forwardRef<HTMLInputElement, ICardInput>(
+	({ children, className, classNameWrap, ...props }, ref) => {
+		return (
+			<div className={cn(classNameWrap, 'row-2 items-center rounded-md border border-input px-3 ')}>
+				{children}
+				<Input className={cn(className, 'flex-auto border-0')} {...props} ref={ref} />
+			</div>
+		)
+	},
+)

@@ -23,7 +23,7 @@ export class Order implements IOrder {
 	members = 2
 	price = 0
 	name = ''
-	orders = [new OrderItem(this, { name: 'Name1' }), new OrderItem(this, { name: 'Name2' })]
+	orders = [new OrderItem(this, { name: '' }), new OrderItem(this, { name: '' })]
 
 	constructor(data?: Partial<Order>) {
 		makeAutoObservable(this)
@@ -50,7 +50,8 @@ export class Order implements IOrder {
 				.fill('')
 				.map((_, i) => members - i)
 				.reverse()
-			arr.forEach(() => this.orders.push(new OrderItem(this, { name: `Name${members}` })))
+			// Name${members}
+			arr.forEach(() => this.orders.push(new OrderItem(this, { name: '' })))
 		} else {
 			this.orders = this.orders.slice(0, members)
 		}
@@ -141,6 +142,9 @@ export class OrderItem {
 	}
 
 	getEatByType(type: TEat) {
+		if (type === 'any') {
+			return this.eat
+		}
 		return this.eat.filter((eat) => eat.type === type)
 	}
 
