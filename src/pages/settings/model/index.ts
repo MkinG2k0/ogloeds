@@ -10,6 +10,7 @@ export const settingsProp = {
 	viewPrice: 'viewPrice',
 	hideAddFoodBtn: 'hideAddFoodBtn',
 	carouselChoose: 'carouselChoose',
+	community: 'community',
 } as const
 
 export type SettingType = typeof settingsProp
@@ -25,6 +26,7 @@ class Setting implements Record<SettingTypeKey, boolean> {
 	splitFood = true
 	hideAddFoodBtn = false
 	carouselChoose = true
+	community = true
 
 	constructor() {
 		makeAutoObservable(this)

@@ -1,5 +1,5 @@
-import { useLocation, useParams } from 'react-router'
 import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { FC, useState } from 'react'
 
 import { Eat, Order, OrderItem, TEat } from 'pages/create-order/model'
@@ -93,12 +93,15 @@ const OrderList = observer(({ order }: { order: Order }) => {
 	)
 })
 
-export const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
+export const OrderCard: FC<{ isCommunity?: boolean; order: OrderItem }> = observer(({ order, isCommunity }) => {
 	const { price, name } = order
 	const viewOnly = useViewOnly()
 	const anyValue = settings.calcStats && (settings.viewCount || settings.viewPrice || settings.viewCalories)
 
 	const onChangeName = (e) => {
+		if (isCommunity) {
+			return
+		}
 		order.setName(e.target.value)
 	}
 
@@ -106,10 +109,16 @@ export const OrderCard: FC<{ order: OrderItem }> = observer(({ order }) => {
 		<Card className={'w-full h-full '}>
 			<CardHeader>
 				<CardTitle className={'row-2 justify-between'}>
-					<CardInput disabled={viewOnly} onChange={onChangeName} placeholder={'Your name'} value={name}>
+					<CardInput
+						classNameWrap={'w-full'}
+						disabled={viewOnly}
+						onChange={onChangeName}
+						placeholder={'Your name'}
+						value={name}
+					>
 						<FaUser />
 					</CardInput>
-					{!viewOnly && (
+					{!viewOnly && !isCommunity && (
 						<Button
 							onClick={() => {
 								order.remove()
@@ -241,66 +250,64 @@ const EatItem: FC<{ eat: Eat; index: number; order: OrderItem; type: TEat }> = o
 		}
 
 		return (
-			<div className={'col-2 align-middle '} key={index}>
-				<div className={'row-2 items-center flex-auto flex-wrap'}>
-					<div className={'row-2 items-center flex-auto min-w-[200px]'}>
-						<div className={'mr-2'}>{index + 1}</div>
-						<FoodSelect
-							className={'flex-auto '}
-							disabled={viewOnly}
-							onChangeFood={onChangeFood}
-							onKeyDown={onKeyDown}
-							placeholder={`write ${type}`}
-							value={name}
-						/>
-					</div>
-					{settings.viewCount && (
-						<CardInput
-							className={'w-12'}
-							// classNameWrap={'w-10'}
-							defaultValue={1}
-							max={999}
-							min={0}
-							onChange={onChangeProperties('count')}
-							placeholder={'count'}
-							type={'number'}
-						>
-							<TbAbacus className={'text-blue-500'} />
-						</CardInput>
-					)}
-
-					{settings.viewPrice && (
-						<CardInput
-							className={'w-20'}
-							defaultValue={0}
-							max={99_999}
-							min={0}
-							onChange={onChangeProperties('price')}
-							placeholder={'price'}
-							type={'number'}
-						>
-							<FaCoins className={'text-yellow-500'} />
-						</CardInput>
-					)}
-
-					{settings.viewCalories && (
-						<CardInput
-							defaultValue={0}
-							max={99_999}
-							min={0}
-							onChange={onChangeProperties('calories')}
-							placeholder={'calories'}
-							type={'number'}
-						>
-							<FaFire className={'text-red-500'} />
-						</CardInput>
-					)}
-					{!viewOnly && (
-						<Button className={'max-w-[50px]'} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
-							<IoIosRemove />
-						</Button>
-					)}
+			<div className={'row-2 items-center flex-auto'}>
+				<div className={'row-2 items-center flex-auto '}>
+					{/*<div className={'mr-1'}>{index + 1}</div>*/}
+					<FoodSelect
+						className={'min-w-0'}
+						disabled={viewOnly}
+						onChangeFood={onChangeFood}
+						onKeyDown={onKeyDown}
+						placeholder={`write ${type}`}
+						value={name}
+					/>
 				</div>
+				{settings.viewCount && (
+					<CardInput
+						className={'w-12'}
+						// classNameWrap={'w-10'}
+						defaultValue={1}
+						max={999}
+						min={0}
+						onChange={onChangeProperties('count')}
+						placeholder={'count'}
+						type={'number'}
+					>
+						<TbAbacus className={'text-blue-500'} />
+					</CardInput>
+				)}
+
+				{settings.viewPrice && (
+					<CardInput
+						className={'w-20'}
+						defaultValue={0}
+						max={99_999}
+						min={0}
+						onChange={onChangeProperties('price')}
+						placeholder={'price'}
+						type={'number'}
+					>
+						<FaCoins className={'text-yellow-500'} />
+					</CardInput>
+				)}
+
+				{settings.viewCalories && (
+					<CardInput
+						defaultValue={0}
+						max={99_999}
+						min={0}
+						onChange={onChangeProperties('calories')}
+						placeholder={'calories'}
+						type={'number'}
+					>
+						<FaFire className={'text-red-500'} />
+					</CardInput>
+				)}
+				{!viewOnly && (
+					<Button className={''} onClick={() => order.removeEat(eat.id)} variant={'danger'}>
+						<IoIosRemove />
+					</Button>
+				)}
 			</div>
 		)
 	},

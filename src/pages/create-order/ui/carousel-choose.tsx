@@ -5,11 +5,11 @@ import { useParams } from 'react-router'
 import { OrderCard, SelectMembers } from 'pages/create-order/ui/list-choose'
 import { useViewOnly } from 'pages/create-order/utils'
 import { Order } from 'pages/create-order/model'
+import { settings } from 'pages/settings/model'
 import { appHistory } from 'pages/main/model'
 import { TableEat } from 'pages/preview'
 
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from 'shared/ui/carousel'
-import { TableCell, TableRow } from 'shared/ui/table'
 import { CardInput } from 'shared/ui/card-input'
 import { useToast } from 'shared/ui/use-toast'
 import { NAV } from 'shared/config/routing'
@@ -38,6 +38,7 @@ export const CarouselChoose = observer(() => {
 
 		api.on('scroll', () => {
 			const curr = api.selectedScrollSnap()
+			const offset = settings.community ? 3 : 2
 
 			if (curr === 1) {
 				if (!order.name.trim()) {
@@ -49,11 +50,15 @@ export const CarouselChoose = observer(() => {
 				return
 			}
 
+			if (curr === 2 && settings.community) {
+				return
+			}
+
 			if (curr === 0) {
 				return
 			}
 
-			const selectedItem = order.orders[curr - 2]
+			const selectedItem = order.orders[curr - offset]
 			if (!selectedItem?.name?.trim()) {
 				api.scrollTo(curr - 1)
 				toast({
@@ -101,6 +106,12 @@ export const CarouselChoose = observer(() => {
 							</div>
 						</Card>
 					</CarouselItem>
+					{settings.community && (
+						<CarouselItem className={'h-full '}>
+							<OrderCard isCommunity order={order.community} />
+						</CarouselItem>
+					)}
+
 					{order.orders.map((order, index) => (
 						<CarouselItem className={'h-full '} key={index}>
 							<OrderCard order={order} />

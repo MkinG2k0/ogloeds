@@ -61,6 +61,12 @@ export const FoodSelect: FC<FoodSelectProps> = ({ onChangeFood, ...props }) => {
 		onChangeFood?.(value)
 	}, [value])
 
+	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = e.target
+
+		setValue(value)
+	}
+
 	return (
 		<div
 			className={'row-2 relative flex-auto'}
@@ -69,7 +75,7 @@ export const FoodSelect: FC<FoodSelectProps> = ({ onChangeFood, ...props }) => {
 			}}
 			onFocus={() => setIsOpen(true)}
 		>
-			<Input onChange={(e) => setValue(e.target.value)} value={value} {...props} />
+			<Input onChange={onChange} value={value} {...props} />
 			<div className={'absolute left-0 top-12 z-10 flex-auto min-w-56 '} tabIndex={-1}>
 				<div
 					className={' rounded-md border bg-background max-h-[45vh] overflow-auto'}

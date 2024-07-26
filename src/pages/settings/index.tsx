@@ -18,6 +18,7 @@ const settingsMapText: Record<SettingTypeKey, string> = {
 	calcStats: 'Calc Stats',
 	hideAddFoodBtn: 'Hide Add Food Btn (Press Enter for add food)',
 	carouselChoose: 'carousel choose',
+	community: 'community food',
 }
 
 const Settings = observer(() => {

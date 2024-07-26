@@ -24,6 +24,7 @@ export class Order implements IOrder {
 	price = 0
 	name = ''
 	orders = [new OrderItem(this, { name: '' }), new OrderItem(this, { name: '' })]
+	community = new OrderItem(this, { name: 'Общак' })
 
 	constructor(data?: Partial<Order>) {
 		makeAutoObservable(this)
@@ -36,6 +37,7 @@ export class Order implements IOrder {
 
 	init() {
 		this.orders = this.orders.map((order) => new OrderItem(this, order))
+		this.community = new OrderItem(this, this.community)
 	}
 
 	setMembers(members: number) {
@@ -50,7 +52,7 @@ export class Order implements IOrder {
 				.fill('')
 				.map((_, i) => members - i)
 				.reverse()
-			// Name${members}
+
 			arr.forEach(() => this.orders.push(new OrderItem(this, { name: '' })))
 		} else {
 			this.orders = this.orders.slice(0, members)
@@ -64,6 +66,8 @@ export class Order implements IOrder {
 
 	updatePrice() {
 		this.price = 0
+		this.price += this.community.price
+
 		this.orders.forEach((order) => {
 			this.price += order.price
 		})
@@ -75,6 +79,15 @@ export class Order implements IOrder {
 
 	previewOrder() {
 		const allOrders: Record<string, { count: number }> = {}
+
+		this.community.eat.forEach(({ name, count }) => {
+			const curr = allOrders[name]
+			if (curr) {
+				allOrders[name].count += count
+			} else {
+				allOrders[name] = { count }
+			}
+		})
 
 		this.orders.forEach(({ eat }) => {
 			eat.forEach(({ name, count }) => {
@@ -98,7 +111,7 @@ export class OrderItem {
 	count = 2
 	calories = 0
 	order: Order
-	eat: Eat[] = [new Eat(this, { type: 'food' }), new Eat(this, { type: 'drink' }), new Eat(this, { type: 'any' })]
+	eat: Eat[] = [new Eat(this, { type: 'any' })]
 
 	constructor(order: Order, data?: Partial<OrderItem>) {
 		makeAutoObservable(this)
